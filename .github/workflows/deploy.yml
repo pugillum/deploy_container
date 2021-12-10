@@ -16,7 +16,7 @@ jobs:
     env:
       TST_REGISTRY_NAME: "travistestregistry"
       TST_ACR_RESOURCE_GROUP: "travis-playground"
-
+      TST_APP_NAME: "travis-app"
     steps:
       - name: "Checkout GitHub Action"
         uses: actions/checkout@main
