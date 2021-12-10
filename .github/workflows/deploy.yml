@@ -46,17 +46,21 @@ jobs:
         run: |
           docker push ${{ env.TST_REGISTRY_NAME }}.azurecr.io/${{ env.TST_APP_NAME }}:${{ github.sha }}
 
-      - name: "Deploy to Azure Container Instances"
-        uses: "azure/aci-deploy@v1"
-        with:
-          resource-group: ${{ env.RESOURCE_GROUP }}
-          dns-name-label: ${{ env.RESOURCE_GROUP }}${{ github.run_number }}
-          image: ${{ env.TST_REGISTRY_NAME }}.azurecr.io/${{ env.TST_APP_NAME }}:${{ github.sha }}
-          registry-login-server: ${{ env.TST_REGISTRY_NAME }}
-          registry-username: ${{ secrets.TST_SP_CLIENT_ID }}
-          registry-password: ${{ secrets.TST_SP_SECRET }}
-          name: aci-sampleapp
-          location: "west europe"
+      - name: "Pull image"
+        run: |
+          docker pull ${{ env.TST_REGISTRY_NAME }}.azurecr.io/${{ env.TST_APP_NAME }}:${{ github.sha }}
+
+      # - name: "Deploy to Azure Container Instances"
+      #   uses: "azure/aci-deploy@v1"
+      #   with:
+      #     resource-group: ${{ env.RESOURCE_GROUP }}
+      #     dns-name-label: ${{ env.RESOURCE_GROUP }}${{ github.run_number }}
+      #     image: ${{ env.TST_REGISTRY_NAME }}.azurecr.io/${{ env.TST_APP_NAME }}:${{ github.sha }}
+      #     registry-login-server: ${{ env.TST_REGISTRY_NAME }}
+      #     registry-username: ${{ secrets.TST_SP_CLIENT_ID }}
+      #     registry-password: ${{ secrets.TST_SP_SECRET }}
+      #     name: aci-sampleapp
+      #     location: "west europe"
 
       - name: failure
         if: failure()
