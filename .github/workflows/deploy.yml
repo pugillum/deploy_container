@@ -1,0 +1,66 @@
+name: Deploy pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_to_environment:
+        description: "Deploy to which environment? [Tst/Prd]"
+        required: true
+        default: "Tst"
+
+jobs:
+  deploy_tst:
+    name: Deploy to Test
+    if: ${{ github.event.inputs.deploy_to_environment == 'Tst' }}
+    runs-on: ubuntu-latest
+    env:
+      TST_REGISTRY_NAME: "travistestregistry"
+      TST_ACR_RESOURCE_GROUP: "travis-playground"
+
+    steps:
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@main
+
+      - name: "Service Principal Login"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.TST_AZURE_CREDENTIALS }}
+
+      - name: "Login to ACR"
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.TST_REGISTRY_NAME }}.azurecr.io
+          username: ${{ secrets.TST_SP_CLIENT_ID }}
+          password: ${{ secrets.TST_SP_SECRET }}
+
+      - name: "Build image"
+        run: |
+          docker build . -t ${{ env.TST_REGISTRY_NAME }}.azurecr.io/${{ env.TST_APP_NAME }}:${{ github.sha }}
+
+      - name: "Test image"
+        run: |
+          echo "do some testing here"
+
+      - name: "Push image"
+        run: |
+          docker push ${{ env.TST_REGISTRY_NAME }}.azurecr.io/${{ env.TST_APP_NAME }}:${{ github.sha }}
+
+      - name: "Deploy to ACI"
+        run: |
+          echo "deploy to ACI"
+
+      - name: failure
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -s \
+            -X POST \
+            -H "Content-Type: text/plain; charset=utf-8" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues" \
+              --data "{ \"title\": \"Failure is always an option\",
+                        \"body\": \"![](https://media.giphy.com/media/cmTgwg6qb7aqXmq0RX/giphy.gif)\n\n This is broken\",
+                        \"assignees\": [\"pugillum\"],
+                        \"labels\":  [\"Failed\"] }"
