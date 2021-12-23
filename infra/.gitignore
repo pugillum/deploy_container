@@ -1,0 +1,12 @@
+.idea
+.terraform*
+.DS_Store
+.terraform.*
+.vscode
+.settings
+.tasks.json
+.databricks*
+Makefile
+tmp
+*.tfstate
+*.tfstate.backup

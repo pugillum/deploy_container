@@ -14,10 +14,10 @@ jobs:
     if: ${{ github.event.inputs.deploy_to_environment == 'Tst' }}
     runs-on: ubuntu-latest
     env:
-      TST_REGISTRY_NAME: "travistestregistry"
-      TST_ACR_RESOURCE_GROUP: "travis-playground"
+      TST_REGISTRY_NAME: "crdeploycontainer"
+      TST_ACR_RESOURCE_GROUP: "travis-container-deploy"
       TST_APP_NAME: "travis-app"
-      RESOURCE_GROUP: "travis-playground"
+      RESOURCE_GROUP: "travis-container-deploy"
     steps:
       - name: "Checkout GitHub Action"
         uses: actions/checkout@main
@@ -62,18 +62,18 @@ jobs:
       #     name: aci-sampleapp
       #     location: "west europe"
 
-      - name: failure
-        if: failure()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl -s \
-            -X POST \
-            -H "Content-Type: text/plain; charset=utf-8" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/issues" \
-              --data "{ \"title\": \"Failure is always an option\",
-                        \"body\": \"![](https://media.giphy.com/media/cmTgwg6qb7aqXmq0RX/giphy.gif)\n\n This is broken\",
-                        \"assignees\": [\"pugillum\"],
-                        \"labels\":  [\"Failed\"] }"
+      # - name: failure
+      #   if: failure()
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     curl -s \
+      #       -X POST \
+      #       -H "Content-Type: text/plain; charset=utf-8" \
+      #       -H "Authorization: token $GITHUB_TOKEN" \
+      #       -H "Accept: application/vnd.github.v3+json" \
+      #       "https://api.github.com/repos/${{ github.repository }}/issues" \
+      #         --data "{ \"title\": \"Failure is always an option\",
+      #                   \"body\": \"![](https://media.giphy.com/media/cmTgwg6qb7aqXmq0RX/giphy.gif)\n\n This is broken\",
+      #                   \"assignees\": [\"pugillum\"],
+      #                   \"labels\":  [\"Failed\"] }"
