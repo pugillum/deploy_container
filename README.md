@@ -25,6 +25,9 @@ Create a secret called TST_AZURE_CREDENTIALS containing the filled in settings b
 
 > NOTE! If your secret begins with a "-" the login will fail, regenerate and get a password that begins with a letter.
 
-Create a secret called TST_SP_CLIENT_ID and assign the Client ID of the Service Principal
+- Create a secret called TST_SP_CLIENT_ID and assign the Client ID of the Service Principal
+- Create a secret called TST_SP_SECRET and assign to the secret of the Service Principal
 
-Create a secret called TST_SP_SECRET and assign to the secret of the Service Principal
+# TODO:
+
+- Deploy the service principal? Or at least configure the RBAC and make service principal mandatory
