@@ -1,4 +1,4 @@
-name: Deploy pipeline
+name: Deploy Conatiner Image
 
 on:
   push:
