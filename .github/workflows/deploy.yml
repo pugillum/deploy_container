@@ -1,6 +1,9 @@
 name: Deploy pipeline
 
 on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       deploy_to_environment:
@@ -46,7 +49,7 @@ jobs:
         run: |
           docker push ${{ env.TST_REGISTRY_NAME }}.azurecr.io/${{ env.TST_APP_NAME }}:${{ github.sha }}
 
-      - name: "Pull image"
+      - name: "Pull image (for fun)"
         run: |
           docker pull ${{ env.TST_REGISTRY_NAME }}.azurecr.io/${{ env.TST_APP_NAME }}:${{ github.sha }}
 
